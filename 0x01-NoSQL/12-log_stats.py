@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 """
 This script provides some stats about about nginx logs stored in MongoDB
