@@ -45,6 +45,21 @@ def call_history(method: typing.Callable) -> typing.Callable:
     return push
 
 
+def replay(method: typing.Callable) -> None:
+    """
+    This function display the history of calls of a particular function.
+    """
+    r = redis.Redis()
+    input = r.lrange(method.__qualname__ + ':inputs', 0, -1)
+    output = r.lrange(method.__qualname__ + ':outputs', 0, -1)
+    history = dict(zip(input, output))
+    print('{} was called {} times'.format(method.__qualname__, len(history)))
+    for keys, values in history.items():
+        print('{}(*{}) -> {}'.format(method.__qualname__,
+                                     keys.decode('utf-8'),
+                                     values.decode('utf-8')))
+
+
 class Cache:
     """
     Cache class
