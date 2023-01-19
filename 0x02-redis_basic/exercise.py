@@ -49,7 +49,12 @@ def replay(method: typing.Callable) -> None:
     """
     This function display the history of calls of a particular function.
     """
-    r = redis.Redis()
+    if method is None or not hasattr(method, '__self__'):
+        return
+    r = getattr(method.__self__, '_redis', None)
+    if not isinstance(r, redis.Redis):
+        return
+    # r = redis.Redis()
     input = r.lrange(method.__qualname__ + ':inputs', 0, -1)
     output = r.lrange(method.__qualname__ + ':outputs', 0, -1)
     history = dict(zip(input, output))
