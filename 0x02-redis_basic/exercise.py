@@ -4,10 +4,45 @@
 This module provides the class Cache
 """
 
+from functools import wraps
 import redis
 import uuid
 import typing
 from typing import Union, Optional
+
+
+def count_calls(method: typing.Callable) -> typing.Callable:
+    """
+    This is a decorator that takes a single method
+    Callable argument and returns a Callable
+    """
+
+    @wraps(method)
+    def count(self, *args, **kwargs) -> typing.Callable:
+        """ Counts the number of times the input method has been called
+        """
+        self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return count
+
+
+def call_history(method: typing.Callable) -> typing.Callable:
+    """
+    This decorator saves the call history of the store method
+    """
+    input = method.__qualname__ + ":inputs"
+    output = method.__qualname__ + ":outputs"
+
+    @wraps(method)
+    def push(self, *args, **kwargs) -> typing.Callable:
+        """
+        This function push onto list `input` on the redis server
+        """
+        self._redis.rpush(input, str(args))
+        out = method(self, *args, **kwargs)
+        self._redis.rpush(output, str(out))
+        return out
+    return push
 
 
 class Cache:
@@ -21,6 +56,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         This method that takes a data argument and returns a string.
@@ -36,7 +73,7 @@ class Cache:
             fn: Optional[
                         typing.Callable[[bytes],
                                         Union[str, bytes, int, float]]
-                    ]) ->\
+                    ] = None) ->\
             Union[str, bytes, int, float]:
         """
         This method retrieves data from the Redis server.
