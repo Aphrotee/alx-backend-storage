@@ -48,16 +48,16 @@ class Cache:
             val = fn(val)
         return val
 
-    def get_str(b: bytes) -> typing.Callable[[bytes], str]:
-        """ Returns bytes to string converion function """
+    def get_str(self, b: bytes) -> str:
+        """ Retreives string from the Redis server """
         def dec(b: bytes) -> str:
             """ Bytes to string conversion """
             return b.decode('utf-8')
-        return dec
+        return self.get(b, dec)
 
-    def get_int(b: bytes) -> typing.Callable[[bytes], int]:
-        """ Returns bytes to integer converion function """
+    def get_int(self, b: bytes) -> int:
+        """ Retreives integer from the Redis server """
         def dint(b: bytes) -> int:
             """ Bytes to integer conversion """
             return int(b)
-        return dint
+        return self.get(b, dint)

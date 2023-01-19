@@ -1,14 +1,15 @@
 -- This is a MySQL script that creates a stored procedure
 -- ComputeAverageWeightedScoreForUsers that computes and
 -- store the average weighted score for all students.
-
+-- Tables
+-- 		users(id, name, average_score)
+--		projects(id,, name, weight)
+-- 		corrections(user_id, project_id, score)
 DELIMITER $$
 DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUsers$$
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
-	DECLARE cummulativeWeightedSum INT;
-	DECLARE weightedSum INT;
-	DECLARE weightedAverage FLOAT;
+	DECLARE cummulativeWeightedSum, weightedSum, weightedAverage INT;
     DECLARE userId INT;
     DECLARE done INT DEFAULT FALSE;
     DECLARE user_cursor CURSOR FOR
