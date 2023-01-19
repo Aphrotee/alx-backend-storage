@@ -6,7 +6,8 @@ This module provides the class Cache
 
 import redis
 import uuid
-from typing import Union
+import typing
+from typing import Union, Optional
 
 
 class Cache:
@@ -29,3 +30,34 @@ class Cache:
         id: str = str(uuid.uuid4())
         self._redis.set(id, data)
         return id
+
+    def get(self,
+            key: str,
+            fn: Optional[
+                        typing.Callable[[bytes],
+                                        Union[str, bytes, int, float]]
+                    ]) ->\
+            Union[str, bytes, int, float]:
+        """
+        This method retrieves data from the Redis server.
+        """
+        val = self._redis.get(key)
+        if val is None:
+            return None
+        if fn is not None:
+            val = fn(val)
+        return val
+
+    def get_str(b: bytes) -> typing.Callable[[bytes], str]:
+        """ Returns bytes to string converion function """
+        def dec(b: bytes) -> str:
+            """ Bytes to string conversion """
+            return b.decode('utf-8')
+        return dec
+
+    def get_int(b: bytes) -> typing.Callable[[bytes], int]:
+        """ Returns bytes to integer converion function """
+        def dint(b: bytes) -> int:
+            """ Bytes to integer conversion """
+            return int(b)
+        return dint
