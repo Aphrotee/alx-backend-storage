@@ -53,6 +53,8 @@ def replay(method: typing.Callable) -> None:
     input = r.lrange(method.__qualname__ + ':inputs', 0, -1)
     output = r.lrange(method.__qualname__ + ':outputs', 0, -1)
     history = dict(zip(input, output))
+    if len(history) == 0:
+        return
     print('{} was called {} times'.format(method.__qualname__, len(history)))
     for keys, values in history.items():
         print('{}(*{}) -> {}'.format(method.__qualname__,
