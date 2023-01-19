@@ -60,7 +60,7 @@ def replay(method: typing.Callable) -> None:
     history = dict(zip(input, output))
     if len(history) == 0:
         return
-    print('{} was called {} times'.format(method.__qualname__, len(history)))
+    print('{} was called {} times:'.format(method.__qualname__, len(history)))
     for keys, values in history.items():
         print('{}(*{}) -> {}'.format(method.__qualname__,
                                      keys.decode('utf-8'),
