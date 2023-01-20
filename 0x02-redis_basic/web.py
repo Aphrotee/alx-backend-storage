@@ -10,6 +10,7 @@ import requests
 import requests_html
 import typing
 
+
 def counter(method: typing.Callable):
     """
     Counts the calls to the input method
@@ -30,7 +31,7 @@ class Cache:
     """
     This class queries a webpage and monitors the number of visits to it
     """
-    
+
     def __init__(self):
         """
         Initialize class
