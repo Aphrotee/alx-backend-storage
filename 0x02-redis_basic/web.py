@@ -27,6 +27,7 @@ def counter(method: typing.Callable):
         return counter(url, *args, **kwargs)
     return count
 
+
 class Cache:
     """
     This class queries a webpage and monitors the number of visits to it
@@ -50,7 +51,7 @@ class Cache:
 
 
 if __name__ == '__main__':
-    url = 'https://www.google.com'
+    url = 'http://www.google.com'
     cache = Cache()
     print(cache)
     cache.get_page(url)
