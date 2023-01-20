@@ -44,9 +44,7 @@ class Cache:
         This function ses the requests module to obtain
         the HTML content of a particular URL and returns it
         """
-        session = requests_html.HTMLSession()
-        response = session.get(url)
-        r = requests.Response()
+        response = requests.get(url)
         return response.text
 
 
